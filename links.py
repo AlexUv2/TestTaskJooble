@@ -1,8 +1,8 @@
 from flask import Flask, render_template, url_for, request, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
-import string
 from random import choices
+import string
 
 
 app = Flask(__name__)
@@ -26,7 +26,7 @@ class Links(db.Model):
 
     def generate_short_url(self):
         characters = string.digits + string.ascii_letters
-        short_url = ''.join(choices(characters, k=6))
+        short_url = ''.join(choices(characters, k=5))
 
         url = self.query.filter_by(short_url=short_url).first()
 
