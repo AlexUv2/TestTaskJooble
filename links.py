@@ -5,9 +5,6 @@ import string
 from random import choices
 
 
-#TODO: Убрать проверку в шаблоне.
-
-
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///links.db'
@@ -23,6 +20,7 @@ class Links(db.Model):
     time_life = db.Column(db.Integer, default=90)
 
     def __init__(self, **kwargs):
+        """value of the variable is assigned automatically"""
         super().__init__(**kwargs)
         self.short_url = self.generate_short_url()
 
@@ -37,8 +35,7 @@ class Links(db.Model):
         return short_url
 
     def __repr__(self):
-        return f'{self.id}, {self.short_url}'
-        # return f'id:{self.id}, fullUrl:{self.full_url}, shtUrl:{self.short_url}, crtime:{self.create_time}, lftime:{self.time_life}'
+        return f'{self.id}'
 
 
 @app.route('/')
@@ -55,7 +52,6 @@ def create_link():
         time_life = request.form['time_life']
 
         link = Links(full_url=full_url, time_life=time_life)
-
         try:
             db.session.add(link)
             db.session.commit()
@@ -70,7 +66,7 @@ def create_link():
 def links_list():
     check_links()
     links = Links.query.order_by(Links.create_time.desc()).all()
-    return render_template('links.html', links=links, timedelta=timedelta, datetime=datetime)
+    return render_template('links.html', links=links, timedelta=timedelta, datetime=datetime, host_url=request.host_url)
 
 
 @app.route('/links/<int:id>')
@@ -78,7 +74,7 @@ def link_detail(id):
     check_links()
     link = Links.query.get_or_404(id)
     active_until = link.create_time + timedelta(days=link.time_life)
-    return render_template('links-detail.html', link=link, active_untill=active_until)
+    return render_template('links-detail.html', link=link, active_untill=active_until,  host_url=request.host_url)
 
 
 @app.route('/links/<string:short_url>')
@@ -99,10 +95,10 @@ def link_delete(id):
     except:
         return 'Can\'t delete it'
 
-#
-# @app.errorhandler(404)
-# def link_not_found():  # !!!!!!!!!!!!!РАЗОБРАТЬСЯ ПОЧЕУ НЕ РАБОТАЕТ!!!!!!!!!!!!
-#     return 'No such links', 404
+
+@app.errorhandler(404)
+def link_not_found():
+    return 'No such links', 404
 
 
 def check_links():

@@ -1,5 +1,4 @@
-from main import db, app, Links
-from flask import Flask, request
+from links import db, app, Links
 from flask_restful import Resource, Api, reqparse, abort, fields, marshal_with
 import datetime
 
@@ -9,17 +8,15 @@ link_put_args = reqparse.RequestParser()
 link_put_args.add_argument('id', type=int, help='id doesn\'t allowed')
 link_put_args.add_argument('full_url', type=str, help='full url required', required=True)
 link_put_args.add_argument('short_url', type=str, help='short url doesn\'t exist')
-link_put_args.add_argument('create_time', type=datetime, help='created time')  # Просто добавили аргументы в request parser
+link_put_args.add_argument('create_time', type=datetime, help='created time')
 link_put_args.add_argument('time_life', type=int, help='lifetime', required=True)
 
 link_update_args = reqparse.RequestParser()
 link_update_args.add_argument('full_url', type=str, help='full url require8d7')
 link_update_args.add_argument('short_url', type=str, help='short url doesn\'t exist')
-link_update_args.add_argument('create_time', type=datetime, help='created time')  # Просто добавили аргументы в request parser
+link_update_args.add_argument('create_time', type=datetime, help='created time')
 link_update_args.add_argument('time_life', type=int, help='lifetime')
 
-
-videos = {}
 
 resource_fields = {
     'id': fields.String,
@@ -31,7 +28,7 @@ resource_fields = {
 
 
 class URL(Resource):
-    """For all requests returns one object"""
+    """For requests with parameter"""
     @marshal_with(resource_fields)
     def get(self, url_id):
         result = Links.query.filter_by(id=url_id).first()
@@ -81,6 +78,7 @@ class URL(Resource):
 
 
 class URLs(Resource):
+    """For requests without parameter"""
 
     @marshal_with(resource_fields)
     def get(self):
@@ -90,9 +88,18 @@ class URLs(Resource):
 
         return result
 
+    @marshal_with(resource_fields)
+    def post(self):
+        args = link_put_args.parse_args()  # args gets all arguments from link_put_args
+        link = Links(full_url=args['full_url'], time_life=args['time_life'])
+        db.session.add(link)
+        db.session.commit()
 
-api.add_resource(URL, "/links/api/<int:url_id>")
+        return link, 201
+
+
 api.add_resource(URLs, "/links/api")
+api.add_resource(URL, "/links/api/<int:url_id>")
 
 
 if __name__ == '__main__':

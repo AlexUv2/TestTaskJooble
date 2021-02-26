@@ -10,11 +10,9 @@
                 <h4>Full Link</h4>
                 <p class="mb-2">{{link.full_url}}</p>
                 <h4>Short Link</h4>
-                <p class="mb-2"><a href="{{ url_for('redirect_to_url', short_url=link.short_url) }}">https://links/{{link.short_url}}</a></p>
+                <p class="mb-2"><a href="{{ url_for('redirect_to_url', short_url=link.short_url) }}">{{host_url}}links/{{link.short_url}}</a></p>
                 <h4>Created:</h4>
                 <p class="mb-2">{{link.create_time.strftime('%Y-%m-%d %H:%M:%S')}}</p>
-<!--                <h4>Active During:</h4>-->
-<!--                <p>{{link.time_life}} days</p>-->
                 <h4>Active untill</h4>
                 <p>{{active_untill.strftime('%Y-%m-%d %H:%M:%S')}}</p>
                 <a href="{{ url_for('link_delete', id=link.id) }}" class="btn btn-danger mb-3">Delete URL</a>

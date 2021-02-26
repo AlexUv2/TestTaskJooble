@@ -8,21 +8,19 @@
 
     {% if links|length > 0 %}
         {% for link in links %}
-            {% if link.create_time + timedelta(link.time_life) > datetime.utcnow() %}
-                <div class="container">
-                    <div class="alert alert-info">
-                        <h4>Full Link</h4>
-                        <p class="mb-2">{{link.full_url}}</p>
-                        <h4>Short Link</h4>
-                        <p class="mb-2"><a href="{{ url_for('redirect_to_url', short_url=link.short_url) }}">https://links/{{link.short_url}}</a></p>
-                        <h4>Created:</h4>
-                        <p class="mb-2">{{link.create_time.strftime('%Y-%m-%d %H:%M:%S')}}</p>
-                        <h4>Active During:</h4>
-                        <p>{{link.time_life}} days</p>
-                        <p><a href="{{ url_for('link_detail', id=link.id) }}">Detail View</a></p>
-                    </div>
+            <div class="container">
+                <div class="alert alert-info">
+                    <h4>Full Link</h4>
+                    <p class="mb-2"><a href="{{link.full_url}}">{{link.full_url}}</a></p>
+                    <h4>Short Link</h4>
+                    <p class="mb-2"><a href="{{ url_for('redirect_to_url', short_url=link.short_url) }}">{{host_url}}links/{{link.short_url}}</a></p>
+                    <h4>Created:</h4>
+                    <p class="mb-2">{{link.create_time.strftime('%Y-%m-%d %H:%M:%S')}}</p>
+                    <h4>Active During:</h4>
+                    <p>{{link.time_life}} days</p>
+                    <p><a href="{{ url_for('link_detail', id=link.id) }}">Detail View</a></p>
                 </div>
-            {% endif %}
+            </div>
         {% endfor %}
     {% else %}
         <p>No links yet</p>
