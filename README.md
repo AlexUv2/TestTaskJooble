@@ -25,6 +25,9 @@ For launching this project on your device you should follow next commands:
     - $python3 linksApi.py
     
     
+   <h4> Follow http://127.0.0.1:5000/ </h4>
+    
+    
 <h3>App Description</h3>
 
   This app shorts the links. You should enter the link and its lifetime, after submitting you will be redirected to the list of links where the last is at the top.
